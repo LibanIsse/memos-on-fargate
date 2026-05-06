@@ -86,5 +86,7 @@ resource "aws_ecs_service" "memos" {
     container_port   = 5230
   }
 
+  
+
   depends_on = [aws_ecs_task_definition.memos]
 }
