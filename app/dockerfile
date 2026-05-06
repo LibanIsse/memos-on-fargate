@@ -18,9 +18,10 @@ COPY --from=frontend /app/server/router/frontend/dist ./server/router/frontend/d
 RUN CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o memos ./cmd/memos
 
 # Runtime stage
-FROM alpine:3.21
-RUN apk add --no-cache ca-certificates tzdata && \
-    addgroup -S appgroup &&  adduser -S appuser -G appgroup && \
+FROM alpine:3.23
+RUN apk update && apk upgrade --no-cache && \
+    apk add --no-cache ca-certificates tzdata && \
+    addgroup -S appgroup && adduser -S appuser -G appgroup && \
     mkdir -p /var/opt/memos && \
     chown -R appuser:appgroup /var/opt/memos
 WORKDIR /app
