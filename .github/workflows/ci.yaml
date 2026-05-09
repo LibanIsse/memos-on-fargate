@@ -1,0 +1,42 @@
+name: App CI
+
+on:
+  pull_request:
+    paths:
+      - "app/**"
+      - ".github/workflows/ci.yml"
+  workflow_dispatch:
+
+jobs:
+  app-ci:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: app
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Enable pnpm
+        run: corepack enable && corepack prepare pnpm@10.33.4 --activate
+
+      - name: Install frontend dependencies
+        run: cd web && pnpm install --frozen-lockfile
+
+      - name: Lint application
+        run: cd web && pnpm run lint
+
+      - name: Frontend production build check
+        run: cd web && pnpm run release
+
+      - name: Docker build validation
+        run: docker build -t memos-ci:test .
+
+      - name: Scan Docker image with Grype
+        uses: anchore/scan-action@v7
+        with:
+          image: memos-ci:test
+          fail-build: true
+          severity-cutoff: high
