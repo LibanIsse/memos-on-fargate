@@ -191,4 +191,5 @@ resource "aws_vpc_security_group_egress_rule" "allow_task_out" {
   security_group_id = aws_security_group.task_sg.id
   cidr_ipv4         = "0.0.0.0/0"
   ip_protocol       = "-1" # semantically equivalent to all ports
+  description       = "Allow ECS tasks outbound access to the internet"
 }

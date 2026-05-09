@@ -32,6 +32,7 @@ resource "aws_vpc_security_group_egress_rule" "rds_out" {
   security_group_id = aws_security_group.rds_sg.id
   cidr_ipv4         = "0.0.0.0/0"
   ip_protocol       = "-1" # semantically equivalent to all ports
+  description = "Allow outbound traffic from RDS security group"
 }
 
 ## create DB postgress
