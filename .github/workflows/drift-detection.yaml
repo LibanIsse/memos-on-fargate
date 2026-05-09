@@ -1,0 +1,73 @@
+name: Terraform Drift Detection
+
+on:
+  schedule:
+    - cron: "0 8 * * 1"
+  workflow_dispatch:
+
+concurrency:
+  group: terraform-state
+  cancel-in-progress: false
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: eu-west-2
+  TF_WORKING_DIR: infra
+  TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
+
+jobs:
+  drift:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ${{ env.TF_WORKING_DIR }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform init
+        run: terraform init
+
+      - name: Drift check
+        id: drift
+        run: |
+          set +e
+          terraform plan -input=false -detailed-exitcode
+          EXIT_CODE=$?
+
+          echo "exit_code=$EXIT_CODE" >> $GITHUB_OUTPUT
+
+          if [ "$EXIT_CODE" -eq 1 ]; then
+            echo "Terraform plan failed"
+            exit 1
+          fi
+
+          exit 0
+
+      - name: Slack notification - drift detected
+        if: steps.drift.outputs.exit_code == '2'
+        run: |
+          curl -X POST -H 'Content-type: application/json' \
+          --data '{"text":"⚠️ Terraform drift detected in ECS Memos infrastructure. Please review the drift-detection workflow."}' \
+          ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: Slack notification - no drift
+        if: steps.drift.outputs.exit_code == '0'
+        run: |
+          curl -X POST -H 'Content-type: application/json' \
+          --data '{"text":"✅ No Terraform drift detected for ECS Memos infrastructure."}' \
+          ${{ secrets.SLACK_WEBHOOK_URL }}
