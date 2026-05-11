@@ -62,12 +62,12 @@ jobs:
         if: steps.drift.outputs.exit_code == '2'
         run: |
           curl -X POST -H 'Content-type: application/json' \
-          --data '{"text":"⚠️ Terraform drift detected in ECS Memos infrastructure. Please review the drift-detection workflow."}' \
+          --data '{"text":"Terraform drift detected in ECS Memos infrastructure. Please review the drift-detection workflow."}' \
           ${{ secrets.SLACK_WEBHOOK_URL }}
 
       - name: Slack notification - no drift
         if: steps.drift.outputs.exit_code == '0'
         run: |
           curl -X POST -H 'Content-type: application/json' \
-          --data '{"text":"✅ No Terraform drift detected for ECS Memos infrastructure."}' \
+          --data '{"text":"No Terraform drift detected for ECS Memos infrastructure."}' \
           ${{ secrets.SLACK_WEBHOOK_URL }}
