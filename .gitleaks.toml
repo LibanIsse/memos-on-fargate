@@ -1,0 +1,5 @@
+[allowlist]
+description = "Allow known test tokens in auth unit tests"
+paths = [
+  '''app/server/auth/token_test.go'''
+]
