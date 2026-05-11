@@ -1,42 +1,73 @@
 name: App CI
 
 on:
-  pull_request:
+  push:
+    branches: [main]
     paths:
       - "app/**"
       - ".github/workflows/ci.yml"
   workflow_dispatch:
 
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: eu-west-2
+  ECR_REPOSITORY: ecsmemos
+
 jobs:
-  app-ci:
+  ci:
     runs-on: ubuntu-latest
 
-    defaults:
-      run:
-        working-directory: app
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
 
       - name: Enable pnpm
         run: corepack enable && corepack prepare pnpm@10.33.4 --activate
 
-      - name: Install frontend dependencies
-        run: cd web && pnpm install --frozen-lockfile
+      - name: Install dependencies
+        working-directory: app/web
+        run: pnpm install --frozen-lockfile
 
-      - name: Lint application
-        run: cd web && pnpm run lint
+      - name: Lint
+        working-directory: app/web
+        run: pnpm run lint
 
-      - name: Frontend production build check
-        run: cd web && pnpm run release
+      - name: Build frontend
+        working-directory: app/web
+        run: pnpm run release
 
-      - name: Docker build validation
-        run: docker build -t memos-ci:test .
+      - name: Set image variables
+        run: |
+          REGISTRY=${{ steps.login-ecr.outputs.registry }}
+          IMAGE_URI=${REGISTRY}/${ECR_REPOSITORY}:${GITHUB_SHA}
+          LATEST_IMAGE_URI=${REGISTRY}/${ECR_REPOSITORY}:latest
 
-      - name: Scan Docker image with Grype
+          echo "IMAGE_URI=${IMAGE_URI}" >> $GITHUB_ENV
+          echo "LATEST_IMAGE_URI=${LATEST_IMAGE_URI}" >> $GITHUB_ENV
+
+      - name: Build Docker image
+        run: docker build -t "${IMAGE_URI}" -t "${LATEST_IMAGE_URI}" ./app
+
+      - name: Scan image with Grype
         uses: anchore/scan-action@v7
         with:
-          image: memos-ci:test
+          image: ${{ env.IMAGE_URI }}
           fail-build: true
           severity-cutoff: high
+
+      - name: Push image to ECR
+        run: |
+          docker push "${IMAGE_URI}"
+          docker push "${LATEST_IMAGE_URI}"
