@@ -1,4 +1,4 @@
-name: Terraform Security Scan
+name: Security Scan
 
 on:
   pull_request:
