@@ -242,6 +242,17 @@ Screenshots of the deployed application and successful workflow runs.
   </tr>
 </table>
 
+<table>
+  <tr>
+    <td width="50%">
+      <img src="./screenshots/pipelines/dependabot.png" alt="dependabot updates" width="100%">
+    </td>
+    <td width="50%">
+      <img src="./screenshots/pipelines/sbom.png" alt="SBOM checks" width="100%">
+    </td>
+  </tr>
+</table>
+
 ## Security
 
 The ECS tasks run in private subnets and do not have public IP addresses. Public traffic only reaches the application through the Application Load Balancer.
