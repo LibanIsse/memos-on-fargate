@@ -40,7 +40,7 @@ module "iam" {
 }
 
 module "ecs" {
-  source = "./modules/ecs"
+  source              = "./modules/ecs"
   execution_role_arn  = module.iam.ecs_task_execution_role_arn
   private_subnet_1_id = module.vpc.private_subnet_1_id
   private_subnet_2_id = module.vpc.private_subnet_2_id
