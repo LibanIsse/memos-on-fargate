@@ -18,14 +18,6 @@ variable "target_group_arn" {
   type = string
 }
 
-variable "db_password" {
-  type      = string
-  sensitive = true
-}
-
-variable "rds_endpoint" {
-  type = string
-}
 
 variable "task_family" {
   type    = string
@@ -70,4 +62,9 @@ variable "log_retention_days" {
 variable "container_image" {
   type    = string
   default = "527814729206.dkr.ecr.eu-west-2.amazonaws.com/ecsmemos:latest"
+}
+
+variable "memos_dsn" {
+  type      = string
+  sensitive = true
 }

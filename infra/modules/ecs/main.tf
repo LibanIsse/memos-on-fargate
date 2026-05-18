@@ -45,7 +45,7 @@ resource "aws_ecs_task_definition" "memos" {
         },
         {
           name  = "MEMOS_DSN"
-          value = local.memos_dsn
+          value = var.memos_dsn
         }
       ]
 
@@ -59,10 +59,6 @@ resource "aws_ecs_task_definition" "memos" {
       }
     }
   ])
-}
-
-locals {
-  memos_dsn = "postgresql://postgres:${var.db_password}@${var.rds_endpoint}:5432/database1?sslmode=require"
 }
 
 # ECS service

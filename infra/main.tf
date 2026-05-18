@@ -29,7 +29,6 @@ module "rds" {
   private_subnet_1_id = module.vpc.private_subnet_1_id
   private_subnet_2_id = module.vpc.private_subnet_2_id
   vpc_id              = module.vpc.vpc_name_id
-  db_password         = var.db_password
 }
 
 module "ecr" {
@@ -42,14 +41,12 @@ module "iam" {
 
 module "ecs" {
   source = "./modules/ecs"
-
   execution_role_arn  = module.iam.ecs_task_execution_role_arn
   private_subnet_1_id = module.vpc.private_subnet_1_id
   private_subnet_2_id = module.vpc.private_subnet_2_id
   task_sg_id          = module.vpc.task_sg_id
   target_group_arn    = module.alb.alb_tg_arn
-  db_password         = var.db_password
-  rds_endpoint        = module.rds.rds_endpoint
+  memos_dsn           = module.rds.memos_dsn
 }
 
 module "acm" {

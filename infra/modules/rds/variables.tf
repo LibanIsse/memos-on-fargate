@@ -18,14 +18,6 @@ variable "task_sg" {
   type        = string
 }
 
-variable "db_password" {
-  description = "rds password"
-  type        = string
-  sensitive   = true
-
-
-}
-
 variable "db_name" {
   type    = string
   default = "database1"

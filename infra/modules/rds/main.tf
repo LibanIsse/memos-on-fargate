@@ -35,6 +35,15 @@ resource "aws_vpc_security_group_egress_rule" "rds_out" {
   description       = "Allow outbound traffic from RDS security group"
 }
 
+# Database password
+data "aws_secretsmanager_secret" "db_password" {
+  name = "memos/db/password"
+}
+
+data "aws_secretsmanager_secret_version" "db_password" {
+  secret_id = data.aws_secretsmanager_secret.db_password.id
+}
+
 ## create DB postgress
 resource "aws_db_instance" "postgres_db" {
   identifier              = "database-1"
@@ -44,7 +53,7 @@ resource "aws_db_instance" "postgres_db" {
   engine_version          = "17.4"
   instance_class          = var.db_instance_class
   username                = var.db_username
-  password                = var.db_password
+  password                = data.aws_secretsmanager_secret_version.db_password.secret_string
   storage_type            = "gp3"
   storage_encrypted       = true
   publicly_accessible     = false

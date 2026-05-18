@@ -80,9 +80,3 @@ variable "hosted_zone_name" {
   description = "domain name"
   type        = string
 }
-
-variable "db_password" {
-  description = "Database RDS password"
-  type        = string
-  sensitive   = true
-}
