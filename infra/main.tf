@@ -47,6 +47,9 @@ module "ecs" {
   task_sg_id          = module.vpc.task_sg_id
   target_group_arn    = module.alb.alb_tg_arn
   memos_dsn           = module.rds.memos_dsn
+  aws_region          = var.aws_region
+  cluster_name        = var.cluster_name
+  service_name        = var.service_name
 }
 
 module "acm" {

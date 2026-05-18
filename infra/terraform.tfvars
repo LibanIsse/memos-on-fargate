@@ -18,3 +18,6 @@ a_z_1 = "eu-west-2a"
 a_z_2 = "eu-west-2b"
 
 hosted_zone_name = "libanisse.co.uk"
+
+cluster_name = "memos-cluster"
+service_name = "memos-service"

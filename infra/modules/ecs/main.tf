@@ -6,7 +6,7 @@ resource "aws_cloudwatch_log_group" "memos" {
 
 # Create ECS Cluster
 resource "aws_ecs_cluster" "main" {
-  name = "memos-cluster"
+  name = var.cluster_name
 }
 
 # Create ECS Task Defintion
@@ -53,7 +53,7 @@ resource "aws_ecs_task_definition" "memos" {
         logDriver = "awslogs"
         options = {
           awslogs-group         = aws_cloudwatch_log_group.memos.name
-          awslogs-region        = "eu-west-2"
+          awslogs-region        = var.aws_region
           awslogs-stream-prefix = "ecs"
         }
       }
@@ -64,7 +64,7 @@ resource "aws_ecs_task_definition" "memos" {
 # ECS service
 
 resource "aws_ecs_service" "memos" {
-  name            = "memos-service"
+  name            = var.service_name
   cluster         = aws_ecs_cluster.main.id
   task_definition = aws_ecs_task_definition.memos.arn
   desired_count   = var.desired_count
@@ -85,8 +85,4 @@ resource "aws_ecs_service" "memos" {
   lifecycle {
     ignore_changes = [task_definition]
   }
-
-
-
-  depends_on = [aws_ecs_task_definition.memos]
 }

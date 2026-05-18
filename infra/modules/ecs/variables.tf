@@ -68,3 +68,18 @@ variable "memos_dsn" {
   type      = string
   sensitive = true
 }
+
+variable "aws_region" {
+  description = "AWS region"
+  type        = string
+}
+
+variable "cluster_name" {
+  description = "ECS cluster name"
+  type        = string
+}
+
+variable "service_name" {
+  description = "ECS service name"
+  type        = string
+}
