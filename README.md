@@ -41,7 +41,7 @@ The infrastructure includes a custom multi-AZ VPC, public/private subnets, ALB, 
 
 ```
 MEMOS-ON-FARGATE
-├── app/               
+├── app/
 │   ├── Dockerfile
 │   └── .dockerignore
 │
@@ -51,7 +51,7 @@ MEMOS-ON-FARGATE
 │   ├── provider.tf
 │   ├── variables.tf
 │   ├── outputs.tf
-│   ├── terraform.tfvars.example
+│   ├── terraform.tfvars
 │   └── modules/
 │       ├── acm/
 │       ├── alb/
@@ -70,8 +70,8 @@ MEMOS-ON-FARGATE
 │   │   ├── sbom.yml
 │   │   ├── security-checks.yml
 │   │   ├── terraform-plan.yml
-│   │   ├── terraform-apply.yml
-│   │   └── terraform-destroy.yml
+│   │   ├── terraform-destroy.yml
+│   │   └── terraform-plan.yml
 │   └── dependabot.yml
 │
 ├── screenshots/
