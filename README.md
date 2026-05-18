@@ -41,18 +41,18 @@ The infrastructure includes a custom multi-AZ VPC, public/private subnets, ALB, 
 
 ```
 MEMOS-ON-FARGATE
-├── app/                         # Application source code and Dockerfile
+├── app/               
 │   ├── Dockerfile
 │   └── .dockerignore
 │
-├── infra/                       # Terraform infrastructure code
-│   ├── backend.tf               # S3 remote backend and state locking configuration
-│   ├── main.tf                  # Root Terraform configuration
+├── infra/
+│   ├── backend.tf
+│   ├── main.tf
 │   ├── provider.tf
 │   ├── variables.tf
 │   ├── outputs.tf
-│   ├── terraform.tfvars.example # Safe example values for required variables
-│   └── modules/                 # Child modules for each AWS service area
+│   ├── terraform.tfvars.example
+│   └── modules/
 │       ├── acm/
 │       ├── alb/
 │       ├── ecr/
@@ -64,15 +64,15 @@ MEMOS-ON-FARGATE
 │
 ├── .github/
 │   ├── workflows/
-│   │   ├── ci.yml                   # Build Docker image, scan and push to ECR
-│   │   ├── deploy.yml               # Update ECS task definition, deploy service and check app health
-│   │   ├── drift-detection.yml      # Scheduled/manual Terraform drift check
-│   │   ├── sbom.yml                 # Generate Software Bill of Materials
-│   │   ├── security-checks.yml      # Trivy, Gitleaks and Checkov security checks
-│   │   ├── terraform-plan.yml       # Terraform fmt, init, validate and plan
-│   │   ├── terraform-apply.yml      # Provision/update infrastructure
-│   │   └── terraform-destroy.yml    # Manual infrastructure teardown
-│   └── dependabot.yml               # Dependency update configuration
+│   │   ├── ci.yml
+│   │   ├── deploy.yml
+│   │   ├── drift-detection.yml
+│   │   ├── sbom.yml
+│   │   ├── security-checks.yml
+│   │   ├── terraform-plan.yml
+│   │   ├── terraform-apply.yml
+│   │   └── terraform-destroy.yml
+│   └── dependabot.yml
 │
 ├── screenshots/
 │   ├── app-demo.gif
