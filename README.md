@@ -126,7 +126,7 @@ infra/backend.tf
 
 ## CI/CD Workflows
 
-GitHub Actions is used for the build, security checks, Terraform plan, Terraform apply, Terraform destroy, and drift detection.
+GitHub Actions is used for the build, security checks, Terraform plan, Terraform apply, Terraform destroy, drift detection SBOM Generation and dependabot updates.
 
 The workflows authenticate to AWS using GitHub OIDC instead of long-term AWS access keys.
 
@@ -298,33 +298,6 @@ Security measures used in this project:
 - Dependabot is configured to raise dependency update pull requests.
 - SBOM generation is included for software supply chain visibility.
 
-## Issues I Worked Through
-
-Some of the issues I had to debug during the project:
-
-- ALB returned 503 Service Temporarily Unavailable when the target group had no healthy ECS tasks.
-- ECS tasks were stopping because the container image tag and digest did not match what was available in ECR.
-- The ALB health check path had to match the application health endpoint, otherwise ECS targets stayed unhealthy.
-- Terraform state locking failed during concurrent CI/CD runs, showing why remote state locking matters.
-- ECS deployments sometimes conflicted with Terraform because the task definition was being updated by CI/CD.
-
-I debugged these by checking ECS service events, target group health checks, CloudWatch logs, ECR image tags, task definition revisions, GitHub Actions logs, IAM role settings and Terraform state behaviour.
-
-
-## What I Learned
-
-This project helped me understand how the main ECS deployment pieces fit together, from Docker builds to running the app on ECS Fargate behind an HTTPS load balancer.
-
-Main takeaways:
-
-- How ECS services, task definitions, target groups and ALB health checks work together.
-- Why ECS tasks should run in private subnets behind a public Application Load Balancer.
-- How to debug common ECS issues such as unhealthy targets, failed tasks and ALB 503 errors.
-- How to organise Terraform using modules, remote state and state locking.
-- How GitHub Actions can deploy to AWS securely using OIDC.
-- Why commit SHA image tags make deployments easier to trace.
-- How security checks, Dependabot, SBOM generation and drift detection improve the pipeline.
-
 ## Tech Stack
 
 - **Cloud:** AWS ECS Fargate, ECR, ALB, VPC, Route 53, ACM, RDS, IAM, CloudWatch, S3
@@ -335,15 +308,4 @@ Main takeaways:
 - **Database:** Amazon RDS
 - **Monitoring/Logs:** CloudWatch Logs
 - **Notifications:** Slack webhook
-
-
-## Future Improvements
-
-- Add ECS blue/green deployments using AWS CodeDeploy for safer releases.
-- Add ECS autoscaling based on CPU, memory, or ALB request count.
-- Add CloudWatch alarms for ECS, ALB, and RDS.
-- Add a separate staging environment before production.
-- Add automated RDS backups and a clearer recovery strategy.
-- Improve monitoring with structured logs, metrics, and tracing.
-- Add more detailed application-level health checks.
 
