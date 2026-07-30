@@ -50,7 +50,7 @@ resource "aws_db_instance" "postgres_db" {
   allocated_storage       = var.allocated_storage
   db_name                 = var.db_name
   engine                  = "postgres"
-  engine_version          = "17.4"
+  engine_version          = "17"
   instance_class          = var.db_instance_class
   username                = var.db_username
   password                = data.aws_secretsmanager_secret_version.db_password.secret_string
