@@ -65,8 +65,8 @@ jobs:
           image: ${{ env.IMAGE_URI }}
           fail-build: true
           severity-cutoff: high
+          output-format: table
 
       - name: Push image to ECR
         run: |
           docker push "${IMAGE_URI}"
-         
